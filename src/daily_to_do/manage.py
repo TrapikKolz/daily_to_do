@@ -3,8 +3,6 @@
 import os
 import sys
 
-text = 'HYHygddyydd'
-
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'daily_to_do.settings')
