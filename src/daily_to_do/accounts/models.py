@@ -26,7 +26,7 @@ class UserManager(BaseUserManager):
         return user
 
     def create_staffuser(self, email=None, password=None,  name=None):
-        user = self.create_user(email, name=name, password=password, is_staff=True)
+        user = self.create_user(email, name=name, password=password, is_staff=True, is_admin=False)
         return user
 
 
@@ -35,9 +35,46 @@ class User(AbstractBaseUser):
     full_name = CharField(max_length=255, blank=True, null=True)
     name = CharField(max_length=255, blank=True, null=True)
     staff = BooleanField(default=False)
-    is_active = BooleanField(default=False)
+    is_active = BooleanField(default=True)
     admin = BooleanField(default=False)
     timestamp = DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+
+    objects = UserManager()
+
+    def __str__(self):
+        return self.email
+
+    def get_short_name(self):
+        if self.name:
+            return self.name
+        return self.email
+
+    def get_short_full_name(self):
+        if self.full_name:
+            return self.full_name
+        return self.email
+
+    def has_perm(self, perm, obj=None):
+        return True
+
+    def has_module_perms(self, app_label):
+        return True
+
+    @property
+    def is_staff(self):
+        if self.admin:
+            return True
+        return self.staff
+
+    @property
+    def is_admin(self):
+        return self.admin
+
+
+    def save(self, *args, **kwargs):
+        print(self.password)
+        super().save(*args,**kwargs)
+
