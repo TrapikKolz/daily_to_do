@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     #Local
     'accounts',
     'notes',
+    'api',
     #Another
     'rest_framework',
 ]
