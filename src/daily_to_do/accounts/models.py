@@ -6,8 +6,9 @@ from django.contrib.auth.hashers import make_password
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
-    def create_user(self, email, password=None, name=None,
-                     full_name=None, is_active=None, is_staff=None, is_admin=None):
+    def create_user(
+            self, email, password=None, name=None, full_name=None, is_active=True, is_staff=None, is_admin=None
+    ):
         if not email:
             raise ValueError("Пользователь должен иметь email")
         if not password:
@@ -73,8 +74,7 @@ class User(AbstractBaseUser):
     def is_admin(self):
         return self.admin
 
-
     def save(self, *args, **kwargs):
-        print(self.password)
-        super().save(*args,**kwargs)
-
+        if not self.id and not self.staff and not self.admin:
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
