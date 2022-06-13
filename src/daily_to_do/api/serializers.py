@@ -1,16 +1,9 @@
-from rest_framework.serializers import IntegerField, CharField, Serializer
-from notes.models import Note
+from rest_framework.serializers import IntegerField, CharField, ModelSerializer
 
-class NoteSerializer(Serializer):
-    id = IntegerField(read_only=True)
-    title = CharField(required=True, max_length=255)
-    text = CharField(required=False, allow_blank=True)
+from ..notes.models import Note
 
-    def create(self, validated_data):
-        return Note.objects.create(**validated_data)
+class NoteSerializer(ModelSerializer):
+    class Meta:
+        model = Note
+        fields = '__all__'
 
-    def update(self, instance, validated_data):
-        instance.title = validated_data.get('title', instance.title)
-        instance.text = validated_data.get('text', instance.text)
-        instance.save()
-        return instance
